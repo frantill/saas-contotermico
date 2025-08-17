@@ -3,7 +3,7 @@
 Status: Draft
 Owner: You (Product Owner)
 Facilitator: Cascade (PM Assistant)
-Last updated: 2025-08-17T08:20:24+02:00
+Last updated: 2025-08-17T08:39:37+02:00
 
 Working name: ContoTermico
 
@@ -63,7 +63,16 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
     - Localizzazione: ITA v1.
     - Sicurezza: cifratura in transito/a riposo; retention documenti configurabile.
   - Tracciamento pratica e stato avanzamento.
-    - Criteri di accettazione: TBD
+    - Status v1: Bozza → Raccolta dati → In revisione → Pronto per firma → Firmato → Inviato GSE.
+    - Transizioni: cambio stato consentito solo se i campi obbligatori della fase corrente sono completi; ogni transizione è loggata con utente, timestamp e note.
+    - Checklist per fase: elenco attività per fase con completamento (%) e bloccanti evidenziati.
+    - Timeline eventi: cronologia (creazione, upload docs, correzioni OCR, generazione PDF, firma, invio).
+    - Assegnazione: 1 “owner” pratica (installatore) + 1 "editor" dati (cliente) + “watchers” opzionali; cambio owner tracciato.
+    - Ricerca/filtri: per ID pratica, cliente (nome/CF), stato, periodo; ordinamento per creazione/ultimo aggiornamento.
+    - Performance: p50 lista pratiche ≤1.5s, p95 ≤3s; dettaglio pratica p50 ≤1s.
+    - Notifiche v1: badge nel listato per cambi stato.
+    - Permessi: Installatore/Staff con pieno accesso; link con possibilità di editing dei dati raccolti per Cliente alla propria pratica.
+    - Error handling: se passaggio di stato bloccato, messaggio con link ai campi/documenti mancanti.
 - Should-haves: TBD
 - Nice-to-haves: TBD
 
@@ -101,7 +110,7 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
 - Constraints: TBD
 
 ## 15) Open Questions
-- Q1: Definire criteri di accettazione per: tracciamento pratica. (Pending)
+- Q1: Confermare criteri di accettazione per tracciamento pratica. (Pending)
 
 ## 16) Decisions Log
 - 2025-08-16: Visione definita; nome di lavoro impostato a ContoTermico.
