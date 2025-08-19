@@ -3,7 +3,7 @@
 Status: Draft
 Owner: You (Product Owner)
 Facilitator: Cascade (PM Assistant)
-Last updated: 2025-08-19T21:01:56+02:00
+Last updated: 2025-08-19T23:13:37+02:00
 
 Working name: ContoTermico
 
@@ -72,9 +72,24 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
     - Performance: p50 lista pratiche ≤1.5s, p95 ≤3s; dettaglio pratica p50 ≤1s.
     - Notifiche v1: badge nel listato per cambi stato.
     - Permessi: Installatore/Staff con pieno accesso; link con possibilità di editing dei dati raccolti per Cliente alla propria pratica.
-    - Error handling: se passaggio di stato bloccato, messaggio con link ai campi/documenti mancanti.
+  - Error handling: se passaggio di stato bloccato, messaggio con link ai campi/documenti mancanti.
  - Should-haves: TBD
  - Nice-to-haves: TBD
+
+## 8.1) MVP Scope & Cutlist (Frozen v1)
+- In scope (v1):
+  - Step 1–4 come definiti nelle sezioni dedicate (campi/validazioni minime).
+  - Generazione PDF Modello delega precompilato; nessuna anteprima; editing dati via form.
+  - Upload documenti/foto: formati e limiti come specificati (JPG/PNG/PDF; 5MB per file in Step 4; 10MB in §8 per OCR documenti).
+  - Tracking stato: Bozza → Raccolta dati → In revisione → Pronto per firma → Firmato → Inviato GSE (invio GSE manuale).
+  - Fallback manuale per tutti i dati (OCR opzionale/spento nel pilot).
+- Out of scope (cutlist v1):
+  - OCR obbligatorio o avanzato (es. visura catastale): rimandato.
+  - Generatori multipli (gruppi ripetibili) in Step 3: rimandati.
+  - Geolocalizzazione, zona climatica calcolata: rimandate.
+  - Integrazioni esterne (invio GSE, firma elettronica), ruoli/permessi avanzati, analytics: rimandati.
+  - Altri moduli PDF oltre al Modello delega: rimandati.
+  - Modulo di mancanza targa: escluso in v1; gestione post-MVP.
 
 ### Form - Step 1 (Scelta soggetto: Privato o Azienda)
  - Selezione iniziale “Tipo soggetto” — obbligatoria; radio: Privato, Azienda. Governa visibilità campi e validazioni.
@@ -152,25 +167,24 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
   - In Step 2 non si raccolgono foto; le foto vengono raccolte in uno step successivo dedicato (es. sezione “Evidenze”).
 
 ### Form - Step 3 (Dati intervento — Generale)
-- Campi e validazioni (v1):
-  1. Dati generali (generatore da sostituire/impianto esistente):
-     - Tipologia di impianto — enum proposta: autonomo, centralizzato.
-     - Luogo di installazione — enum proposta: all'interno, all'esterno, in centrale termica / locale tecnico.
-     - Tipologia generatore — enum proposta: stufa, caldaia, pompa di calore, camino aperto, altro.
-     - Potenza termica (kW) — obbligatoria; numero > 0; decimali ammessi (es. 0,1–200).
-     - Tipologia terminali — enum proposta: radiatori, a pavimento, split, fan-coil, altro.
-     - Tipologia combustibile — enum proposta: gasolio, metano, gpl, biomassa, altro.
-  2. Generatori aggiuntivi — opzionale; pulsante “Aggiungi generatore” (ripete i campi di cui sopra).
-  3. Foto intervento — non raccolte in Step 3; raccolta prevista in uno step successivo dedicato (es. sezione “Evidenze”).
-  4. Note operative — opzionali.
+- Campi e validazioni (v1 — definitivi, 1 solo generatore):
+  1. Tipologia di impianto — enum: autonomo, centralizzato (obbligatorio).
+  2. Luogo di installazione — enum: all'interno, all'esterno, centrale termica/locale tecnico (obbligatorio).
+  3. Tipologia generatore — enum: stufa, caldaia, pompa di calore, camino aperto, altro (obbligatorio).
+  4. Potenza termica (kW) — obbligatoria; numero > 0; decimali ammessi (range indicativo 0,1–200).
+  5. Tipologia terminali — enum: radiatori, a pavimento, split, fan-coil, altro (obbligatorio).
+  6. Tipologia combustibile — enum: gasolio, metano, gpl, biomassa, altro (obbligatorio).
+  7. Note operative — opzionali.
+- Esclusioni v1:
+  - Generatori aggiuntivi: NON previsto in v1 (rimandato).
+  - Foto intervento: non raccolte in Step 3 (vedi Step 4 “Evidenze”).
 - Regole UX/Dinamiche:
-  - In Step 3 non si raccolgono foto; la relativa UX/validazione sarà definita nello step dedicato “Evidenze”.
+  - Select per enum; validazioni immediate; errori parlanti.
 
 ### Form - Step 4 (Evidenze / Area Documentale)
 - Campi e struttura (copiati dalla bozza UI di riferimento):
   1. Documentazione fotografica attestante l’intervento — minimo 7 foto riportanti:
      - Le targhe dei generatori sostituiti e installati — dropzone “Aggiungi foto”; formati: JPG/PNG; max 5 MB; multiplo.
-     - In caso di mancanza targa allegare l’apposito modulo di mancanza targa con relativa potenza in kW (per intervento 2B) — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; condizionale se targa mancante.
      - I generatori sostituiti e installati — dropzone “Aggiungi foto”; formati: JPG/PNG; max 5 MB; multiplo.
      - La centrale termica, o il locale di installazione, ante-operam (presente il generatore sostituito) e post-operam (presente il generatore installato) — dropzone “Aggiungi foto”; formati: JPG/PNG; max 5 MB; multiplo.
   2. Certificato/Dichiarazione di smaltimento rilasciato da operatore autorizzato — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; singolo. Nota: richiamo a “Nota 1” delle Procedure.
@@ -182,7 +196,6 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
 - Regole UX/Dinamiche:
   - Ogni voce ha una dropzone con drag&drop o pulsante “Aggiungi Foto/Documento”; mostra dimensione massima 5 MB e barra di progresso.
   - Validazione: minimo 7 foto complessive nelle categorie fotografiche; blocco avanzamento se non raggiunto.
-  - Condizionale: modulo mancanza targa richiesto solo se non vengono caricate le targhe (per intervento 2B).
   - Multi-file: abilitato solo per “Fatture e Ricevute dei bonifici”; le altre voci documento sono singole.
   - Anteprima immagini per foto; messaggi di errore chiari per formato/dimensione.
 
@@ -257,7 +270,10 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
   - 2025-08-18: Step 2: Default “Coincide con residenza/sede”: ON per Privato; OFF per Azienda.
   - 2025-08-18: Step 2: Nessuna foto raccolta in Step 2; le foto saranno raccolte in uno step successivo dedicato (es. sezione “Evidenze”).
   - 2025-08-18: Step 3: Nessuna foto raccolta in Step 3; raccolta spostata a step successivo dedicato (es. sezione “Evidenze”).
-  - 2025-08-19: Step 4: Introdotta sezione “Evidenze / Area Documentale” con struttura e vincoli allineati alla bozza (minimo 7 foto; limite 5 MB/file; modulo mancanza targa trattato come documento PDF/JPG/PNG).
+  - 2025-08-19: Step 3 “Dati intervento” definiti (v1): campi/enum minimi; 1 solo generatore; “Generatori aggiuntivi” rimandato.
+  - 2025-08-19: MVP Scope & Cutlist (v1) congelati (vedi §8.1).
+  - 2025-08-19: Step 4: Introdotta sezione “Evidenze / Area Documentale” con struttura e vincoli allineati alla bozza (minimo 7 foto; limite 5 MB/file).
+  - 2025-08-19: MVP change: rimosso il “modulo mancanza targa” dal perimetro v1; corner case gestito post-MVP.
   - TBD
 
 ---
