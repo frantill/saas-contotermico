@@ -3,7 +3,7 @@
 Status: Draft
 Owner: You (Product Owner)
 Facilitator: Cascade (PM Assistant)
-Last updated: 2025-08-18T19:56:54+02:00
+Last updated: 2025-08-19T21:01:56+02:00
 
 Working name: ContoTermico
 
@@ -149,7 +149,7 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
   - Collegamento indirizzo: se “Coincide” è attivo, campi read-only e sincronizzati con Step 1; “Scollega e modifica” rende i campi indipendenti.
   - Se si usa “Copia”, i campi restano editabili e non si aggiornano al variare di Step 1.
   - Default “Coincide”: ON per Privato; OFF per Azienda (toggle modificabile).
-  - In Step 2 non si raccolgono foto; le foto vengono raccolte nei passi successivi (es. Step 3 “Dati intervento”).
+  - In Step 2 non si raccolgono foto; le foto vengono raccolte in uno step successivo dedicato (es. sezione “Evidenze”).
 
 ### Form - Step 3 (Dati intervento — Generale)
 - Campi e validazioni (v1):
@@ -161,15 +161,30 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
      - Tipologia terminali — enum proposta: radiatori, a pavimento, split, fan-coil, altro.
      - Tipologia combustibile — enum proposta: gasolio, metano, gpl, biomassa, altro.
   2. Generatori aggiuntivi — opzionale; pulsante “Aggiungi generatore” (ripete i campi di cui sopra).
-  3. Foto intervento — obbligatorie: 2 foto totali
-     - 1 Pre-intervento (stato prima)
-     - 1 Post-intervento (stato dopo)
-     - Formati: JPG/PNG; max 10MB/cad; compressione lato client e barre di progresso upload.
+  3. Foto intervento — non raccolte in Step 3; raccolta prevista in uno step successivo dedicato (es. sezione “Evidenze”).
   4. Note operative — opzionali.
 - Regole UX/Dinamiche:
-  - Due dropzone distinte e chiaramente etichettate: “Foto PRE” e “Foto POST”.
-  - Validazione: esattamente 1 foto per ciascuna categoria; blocco avanzamento se mancanti.
-  - Futuro: controllo EXIF orario/scatto e guida in caso di incongruenze.
+  - In Step 3 non si raccolgono foto; la relativa UX/validazione sarà definita nello step dedicato “Evidenze”.
+
+### Form - Step 4 (Evidenze / Area Documentale)
+- Campi e struttura (copiati dalla bozza UI di riferimento):
+  1. Documentazione fotografica attestante l’intervento — minimo 7 foto riportanti:
+     - Le targhe dei generatori sostituiti e installati — dropzone “Aggiungi foto”; formati: JPG/PNG; max 5 MB; multiplo.
+     - In caso di mancanza targa allegare l’apposito modulo di mancanza targa con relativa potenza in kW (per intervento 2B) — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; condizionale se targa mancante.
+     - I generatori sostituiti e installati — dropzone “Aggiungi foto”; formati: JPG/PNG; max 5 MB; multiplo.
+     - La centrale termica, o il locale di installazione, ante-operam (presente il generatore sostituito) e post-operam (presente il generatore installato) — dropzone “Aggiungi foto”; formati: JPG/PNG; max 5 MB; multiplo.
+  2. Certificato/Dichiarazione di smaltimento rilasciato da operatore autorizzato — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; singolo. Nota: richiamo a “Nota 1” delle Procedure.
+  3. Modulo di delega — “Scarica il modulo di delega, compila e carica” — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; singolo.
+  4. Dichiarazione di fine lavoro — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; singolo.
+  5. Modulo del mandato all'incasso — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; singolo.
+  6. Fatture e Ricevute dei bonifici — dropzone “Aggiungi documento/i”; formati: PDF/JPG/PNG; max 5 MB; multipli.
+  7. Documento di identità e tessera sanitaria (codice fiscale) — dropzone “Aggiungi documento”; formati: PDF/JPG/PNG; max 5 MB; singolo.
+- Regole UX/Dinamiche:
+  - Ogni voce ha una dropzone con drag&drop o pulsante “Aggiungi Foto/Documento”; mostra dimensione massima 5 MB e barra di progresso.
+  - Validazione: minimo 7 foto complessive nelle categorie fotografiche; blocco avanzamento se non raggiunto.
+  - Condizionale: modulo mancanza targa richiesto solo se non vengono caricate le targhe (per intervento 2B).
+  - Multi-file: abilitato solo per “Fatture e Ricevute dei bonifici”; le altre voci documento sono singole.
+  - Anteprima immagini per foto; messaggi di errore chiari per formato/dimensione.
 
 ## 9) Non-Functional Requirements
 - Performance: TBD
@@ -218,7 +233,6 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
 ## 15) Open Questions
   - Q6 (Step 3): Confermare enum v1 per Dati intervento (Tipologia impianto, Luogo installazione, Tipologia generatore, Tipologia terminali, Tipologia combustibile).
   - Q7 (Step 3): Supportare “generatori aggiuntivi” in v1 (gruppo ripetibile) o rimandare?
-  - Q8 (Step 3): Collocazione foto pre/post va bene in Step 3 “Dati intervento” o preferisci in una sezione dedicata “Evidenze”?
    - Q9 (Step 2): Reintrodurre “Titolo di possesso/disponibilità immobile” in una fase successiva? Quali campi/dichiarazioni servono (e.g. dati proprietario, consenso)?
 
 ## 16) Decisions Log
@@ -232,7 +246,7 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
   - 2025-08-17: Step 2 “Ubicazione/Immobile”: 1 indirizzo di installazione per pratica (opzione A confermata).
   - 2025-08-17: Step 2 “Ubicazione/Immobile”: Destinazione d’uso = enum (Commerciale, Industriale, Uffici, Agricolo, Altro), valida per Aziende e Privati.
   - 2025-08-17: Step 2 “Ubicazione/Immobile”: Dati catastali obbligatori in Step 2; abilitato upload/foto della visura catastale; OCR di estrazione automatica pianificato per una release successiva.
-  - 2025-08-17: Step 3 “Dati intervento”: Foto intervento obbligatorie = 2 (1 pre + 1 post); posizionamento proposto in Step 3.
+  - 2025-08-17: Step 3 “Dati intervento”: [SUPERSEDED 2025-08-18] Foto intervento obbligatorie = 2 (1 pre + 1 post); posizionamento proposto in Step 3.
   - 2025-08-17: Step 2 “Ubicazione/Immobile”: "Referente in loco" non previsto in v1.
   - 2025-08-17: Step 1: introdotta scelta “Privato” vs “Azienda”; definiti campi/validazioni per Privato; adeguata UX e OCR.
   - 2025-08-17: Step 2: Prefill indirizzo aggiornato per gestire Privato (Residenza) e Azienda (Sede operativa).
@@ -241,7 +255,9 @@ Le soluzioni attuali replicano il processo burocratico senza semplificarlo.
   - 2025-08-18: Step 1: Email obbligatoria per Privato e Azienda; per Azienda: SDI obbligatorio se manca PEC.
   - 2025-08-18: Step 2: Aggiunta opzione “Coincide con residenza/sede” con sincronizzazione e possibilità di scollegare; rimosso temporaneamente “Titolo di possesso/disponibilità” e dati proprietario.
   - 2025-08-18: Step 2: Default “Coincide con residenza/sede”: ON per Privato; OFF per Azienda.
-  - 2025-08-18: Step 2: Nessuna foto raccolta in Step 2; le foto saranno raccolte nei passi successivi (es. Step 3).
+  - 2025-08-18: Step 2: Nessuna foto raccolta in Step 2; le foto saranno raccolte in uno step successivo dedicato (es. sezione “Evidenze”).
+  - 2025-08-18: Step 3: Nessuna foto raccolta in Step 3; raccolta spostata a step successivo dedicato (es. sezione “Evidenze”).
+  - 2025-08-19: Step 4: Introdotta sezione “Evidenze / Area Documentale” con struttura e vincoli allineati alla bozza (minimo 7 foto; limite 5 MB/file; modulo mancanza targa trattato come documento PDF/JPG/PNG).
   - TBD
 
 ---
