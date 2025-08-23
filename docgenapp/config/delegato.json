@@ -1,0 +1,17 @@
+{
+  "nome": "Francesco",
+  "cognome": "Scandola",
+  "piva": "IT12345678901",
+  "cf": "SCNFNC88L12M172S",
+  "indirizzo": {
+    "via": "Via Roversola",
+    "civico": "44",
+    "cap": "37059",
+    "comune": "Zevio",
+    "provincia": "VR"
+  },
+  "contatti": {
+    "email": "ing.francesco.scandola@gmail.com",
+    "telefono": "+393791075736"
+  }
+}
