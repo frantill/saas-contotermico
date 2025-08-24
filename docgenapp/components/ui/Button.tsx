@@ -3,13 +3,17 @@ import * as React from "react";
 import { cn } from "@/lib/cn";
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "ghost" | "outline";
+  variant?: "primary" | "secondary" | "ghost" | "outline" | "accent" | "destructive" | "success" | "warning";
   size?: "sm" | "md" | "lg";
 };
 
 const variants: Record<NonNullable<ButtonProps["variant"]>, string> = {
-  primary: "bg-primary text-primary-foreground hover:opacity-90",
-  secondary: "bg-muted text-foreground hover:bg-slate-200",
+  primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
+  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary-hover",
+  accent: "bg-accent text-accent-foreground hover:bg-accent-hover",
+  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive-hover",
+  success: "bg-success text-success-foreground hover:bg-success-hover",
+  warning: "bg-warning text-warning-foreground hover:bg-warning-hover",
   outline: "border border-border bg-background text-foreground hover:bg-muted",
   ghost: "bg-transparent hover:bg-muted text-foreground",
 };

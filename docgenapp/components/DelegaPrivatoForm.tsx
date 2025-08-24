@@ -229,6 +229,12 @@ export default function DelegaPrivatoForm() {
             </div>
           </div>
 
+          <div className="flex items-center gap-3">
+            <Button onClick={callOCR} disabled={loadingOCR || (!frontPreview && !backPreview)} variant="primary">
+              {loadingOCR ? (<><Spinner className="mr-2" size="sm" /> Estrazione...</>) : "Estrai da documento"}
+            </Button>
+          </div>
+
           {error ? <div className="text-sm text-red-700 bg-red-50 p-3 rounded-[var(--radius-sm)]">{error}</div> : null}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -251,10 +257,7 @@ export default function DelegaPrivatoForm() {
           </div>
         </CardContent>
         <CardFooter className="flex gap-3">
-          <Button onClick={callOCR} disabled={loadingOCR} variant="secondary">
-            {loadingOCR ? (<><Spinner className="mr-2" size="sm" /> Estrazione...</>) : "Estrai da documento"}
-          </Button>
-          <Button onClick={onGeneratePDF} disabled={loadingPDF}>
+          <Button onClick={onGeneratePDF} disabled={loadingPDF} variant="secondary">
             {loadingPDF ? (<><Spinner className="mr-2" size="sm" /> Generazione...</>) : "Genera PDF"}
           </Button>
         </CardFooter>

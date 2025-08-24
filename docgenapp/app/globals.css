@@ -2,14 +2,42 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a; /* slate-900 */
   /* DS: semantic colors */
-  --primary: #2563eb; /* blue-600 */
+  /* Primary (brand) – emerald */
+  --primary: #059669; /* emerald-600 */
+  --primary-hover: #047857; /* emerald-700 */
   --primary-foreground: #ffffff;
+
+  /* Secondary (neutral emphasis) – slate */
+  --secondary: #64748b; /* slate-500 */
+  --secondary-hover: #475569; /* slate-600 */
+  --secondary-foreground: #ffffff;
+
+  /* Accent (optional supportive) – blue */
+  --accent: #2563eb; /* blue-600 */
+  --accent-hover: #1d4ed8; /* blue-700 */
+  --accent-foreground: #ffffff;
+
+  /* Feedback */
+  --success: #16a34a; /* green-600 */
+  --success-hover: #15803d; /* green-700 */
+  --success-foreground: #ffffff;
+
+  --warning: #d97706; /* amber-600 */
+  --warning-hover: #b45309; /* amber-700 */
+  --warning-foreground: #1f1300;
+
+  --destructive: #dc2626; /* red-600 */
+  --destructive-hover: #b91c1c; /* red-700 */
+  --destructive-foreground: #ffffff;
+
+  /* Neutrals */
   --muted: #f1f5f9; /* slate-100 */
   --muted-foreground: #475569; /* slate-600 */
-  --border: #e5e7eb; /* gray-200 */
-  --ring: #3b82f6; /* blue-500 */
+  --border: #e2e8f0; /* slate-200 */
+  --ring: #93c5fd; /* blue-300 */
+
   /* DS: radii */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -23,6 +51,29 @@
   --font-mono: var(--font-geist-mono);
   /* DS: expose colors & radii to Tailwind */
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-destructive-foreground: var(--destructive-foreground);
+
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
