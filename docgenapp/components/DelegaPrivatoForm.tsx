@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OCRResult, DelegaPayload } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -64,6 +64,9 @@ export default function DelegaPrivatoForm() {
   const [loadingOCR, setLoadingOCR] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
   const [error, setError] = useState<string>("");
+
+  const frontInputRef = useRef<HTMLInputElement>(null);
+  const backInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     nome: "",
@@ -219,12 +222,42 @@ export default function DelegaPrivatoForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label className="mb-1 block">Documento fronte</Label>
-              <input type="file" accept="image/*,.pdf" onChange={(e) => onFilesChange(e.target.files, "front")} />
+              <div className="flex items-center gap-3">
+                <input
+                  ref={frontInputRef}
+                  id="front-file"
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => onFilesChange(e.target.files, "front")}
+                  className="hidden"
+                />
+                <Button type="button" variant="outline" onClick={() => frontInputRef.current?.click()}>
+                  Carica fronte
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {frontFile ? frontFile.name : "Nessun file selezionato"}
+                </span>
+              </div>
               {frontPreview ? <img src={frontPreview} alt="fronte" className="mt-2 max-h-48 border border-border" /> : null}
             </div>
             <div>
               <Label className="mb-1 block">Documento retro</Label>
-              <input type="file" accept="image/*,.pdf" onChange={(e) => onFilesChange(e.target.files, "back")} />
+              <div className="flex items-center gap-3">
+                <input
+                  ref={backInputRef}
+                  id="back-file"
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => onFilesChange(e.target.files, "back")}
+                  className="hidden"
+                />
+                <Button type="button" variant="outline" onClick={() => backInputRef.current?.click()}>
+                  Carica retro
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {backFile ? backFile.name : "Nessun file selezionato"}
+                </span>
+              </div>
               {backPreview ? <img src={backPreview} alt="retro" className="mt-2 max-h-48 border border-border" /> : null}
             </div>
           </div>
