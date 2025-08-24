@@ -1,7 +1,13 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OCRResult, DelegaPayload } from "@/lib/types";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Badge } from "@/components/ui/Badge";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
+import { Spinner } from "@/components/ui/Spinner";
 
 const CONF_THRESHOLD = 0.9;
 
@@ -20,17 +26,17 @@ function LabeledInput({ label, value, onChange, required, placeholder, confidenc
   const [touched, setTouched] = useState(false);
   const invalid = pattern && touched && !pattern.test(value);
   const badge = confidence !== undefined && confidence < CONF_THRESHOLD ? (
-    <span className="ml-2 text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded">Da confermare</span>
+    <Badge variant="outline" className="ml-2">Da confermare</Badge>
   ) : null;
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-gray-800">
+      <Label className="text-sm font-medium text-foreground">
         {label}
         {required ? <span className="text-red-500"> *</span> : null}
         {badge}
-      </label>
-      <input
-        className={`border rounded px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${invalid ? "border-red-500" : "border-gray-300"}`}
+      </Label>
+      <Input
+        className={invalid ? "border-red-500" : undefined}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={() => setTouched(true)}
@@ -58,6 +64,9 @@ export default function DelegaPrivatoForm() {
   const [loadingOCR, setLoadingOCR] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
   const [error, setError] = useState<string>("");
+
+  const frontInputRef = useRef<HTMLInputElement>(null);
+  const backInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     nome: "",
@@ -205,58 +214,88 @@ export default function DelegaPrivatoForm() {
 
   return (
     <div className="max-w-3xl mx-auto w-full py-8">
-      <h1 className="text-2xl font-semibold mb-6">Delega – Generatore (Privato)</h1>
+      <Card>
+        <CardHeader>
+          <h1 className="text-xl md:text-2xl font-semibold">Delega – Generatore (Privato)</h1>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label className="mb-1 block">Documento fronte</Label>
+              <div className="flex items-center gap-3">
+                <input
+                  ref={frontInputRef}
+                  id="front-file"
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => onFilesChange(e.target.files, "front")}
+                  className="hidden"
+                />
+                <Button type="button" variant="outline" onClick={() => frontInputRef.current?.click()}>
+                  Carica fronte
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {frontFile ? frontFile.name : "Nessun file selezionato"}
+                </span>
+              </div>
+              {frontPreview ? <img src={frontPreview} alt="fronte" className="mt-2 max-h-48 border border-border" /> : null}
+            </div>
+            <div>
+              <Label className="mb-1 block">Documento retro</Label>
+              <div className="flex items-center gap-3">
+                <input
+                  ref={backInputRef}
+                  id="back-file"
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => onFilesChange(e.target.files, "back")}
+                  className="hidden"
+                />
+                <Button type="button" variant="outline" onClick={() => backInputRef.current?.click()}>
+                  Carica retro
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {backFile ? backFile.name : "Nessun file selezionato"}
+                </span>
+              </div>
+              {backPreview ? <img src={backPreview} alt="retro" className="mt-2 max-h-48 border border-border" /> : null}
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">Documento fronte</label>
-          <input type="file" accept="image/*,.pdf" onChange={(e) => onFilesChange(e.target.files, "front")} />
-          {frontPreview ? <img src={frontPreview} alt="fronte" className="mt-2 max-h-48 border" /> : null}
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">Documento retro</label>
-          <input type="file" accept="image/*,.pdf" onChange={(e) => onFilesChange(e.target.files, "back")} />
-          {backPreview ? <img src={backPreview} alt="retro" className="mt-2 max-h-48 border" /> : null}
-        </div>
-      </div>
+          <div className="flex items-center gap-3">
+            <Button onClick={callOCR} disabled={loadingOCR || (!frontPreview && !backPreview)} variant="primary">
+              {loadingOCR ? (<><Spinner className="mr-2" size="sm" /> Estrazione...</>) : "Estrai da documento"}
+            </Button>
+          </div>
 
-      <div className="flex gap-3 mb-6">
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          onClick={callOCR}
-          disabled={loadingOCR}
-        >
-          {loadingOCR ? "Estrazione..." : "Estrai da documento"}
-        </button>
-        <button
-          className="bg-emerald-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          onClick={onGeneratePDF}
-          disabled={loadingPDF}
-        >
-          {loadingPDF ? "Generazione..." : "Genera PDF"}
-        </button>
-      </div>
+          {error ? <div className="text-sm text-red-700 bg-red-50 p-3 rounded-[var(--radius-sm)]">{error}</div> : null}
 
-      {error ? <div className="mb-4 text-sm text-red-700 bg-red-50 p-3 rounded">{error}</div> : null}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <LabeledInput label="Nome" value={form.nome} onChange={update("nome")} required confidence={conf.nome} />
-        <LabeledInput label="Cognome" value={form.cognome} onChange={update("cognome")} required confidence={conf.cognome} />
-        <LabeledInput label="Codice fiscale" value={form.codice_fiscale} onChange={update("codice_fiscale")} required confidence={conf.codice_fiscale} pattern={cfRegex} errorText="CF non valido" />
-        <LabeledInput label="Data di nascita (YYYY-MM-DD)" value={form.data_nascita} onChange={update("data_nascita")} required confidence={conf.data_nascita} />
-        <LabeledInput label="Comune di nascita" value={form.nascita_comune} onChange={update("nascita_comune")} required confidence={conf.nascita_comune} />
-        <LabeledInput label="Provincia di nascita" value={form.nascita_provincia} onChange={update("nascita_provincia")} required confidence={conf.nascita_provincia} />
-        <LabeledInput label="Via" value={form.via} onChange={update("via")} required confidence={conf.via} />
-        <LabeledInput label="Civico" value={form.civico} onChange={update("civico")} required confidence={conf.civico} />
-        <LabeledInput label="CAP" value={form.cap} onChange={update("cap")} required confidence={conf.cap} pattern={capRegex} errorText="CAP non valido" />
-        <LabeledInput label="Comune" value={form.comune} onChange={update("comune")} required confidence={conf.comune} />
-        <LabeledInput label="Provincia" value={form.provincia} onChange={update("provincia")} required confidence={conf.provincia} />
-        <LabeledInput label="Email" value={form.email} onChange={update("email")} required confidence={conf.email} pattern={emailRegex} errorText="Email non valida" />
-        <LabeledInput label="Tipo documento (CIE|CI)" value={form.doc_tipo} onChange={update("doc_tipo")} confidence={conf.doc_tipo} />
-        <LabeledInput label="Numero documento" value={form.doc_numero} onChange={update("doc_numero")} confidence={conf.doc_numero} />
-        <LabeledInput label="Data rilascio (YYYY-MM-DD)" value={form.doc_rilascio} onChange={update("doc_rilascio")} confidence={conf.doc_rilascio} />
-        <LabeledInput label="Data scadenza (YYYY-MM-DD)" value={form.doc_scadenza} onChange={update("doc_scadenza")} confidence={conf.doc_scadenza} />
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <LabeledInput label="Nome" value={form.nome} onChange={update("nome")} required confidence={conf.nome} />
+            <LabeledInput label="Cognome" value={form.cognome} onChange={update("cognome")} required confidence={conf.cognome} />
+            <LabeledInput label="Codice fiscale" value={form.codice_fiscale} onChange={update("codice_fiscale")} required confidence={conf.codice_fiscale} pattern={cfRegex} errorText="CF non valido" />
+            <LabeledInput label="Data di nascita (YYYY-MM-DD)" value={form.data_nascita} onChange={update("data_nascita")} required confidence={conf.data_nascita} />
+            <LabeledInput label="Comune di nascita" value={form.nascita_comune} onChange={update("nascita_comune")} required confidence={conf.nascita_comune} />
+            <LabeledInput label="Provincia di nascita" value={form.nascita_provincia} onChange={update("nascita_provincia")} required confidence={conf.nascita_provincia} />
+            <LabeledInput label="Via" value={form.via} onChange={update("via")} required confidence={conf.via} />
+            <LabeledInput label="Civico" value={form.civico} onChange={update("civico")} required confidence={conf.civico} />
+            <LabeledInput label="CAP" value={form.cap} onChange={update("cap")} required confidence={conf.cap} pattern={capRegex} errorText="CAP non valido" />
+            <LabeledInput label="Comune" value={form.comune} onChange={update("comune")} required confidence={conf.comune} />
+            <LabeledInput label="Provincia" value={form.provincia} onChange={update("provincia")} required confidence={conf.provincia} />
+            <LabeledInput label="Email" value={form.email} onChange={update("email")} required confidence={conf.email} pattern={emailRegex} errorText="Email non valida" />
+            <LabeledInput label="Tipo documento (CIE|CI)" value={form.doc_tipo} onChange={update("doc_tipo")} confidence={conf.doc_tipo} />
+            <LabeledInput label="Numero documento" value={form.doc_numero} onChange={update("doc_numero")} confidence={conf.doc_numero} />
+            <LabeledInput label="Data rilascio (YYYY-MM-DD)" value={form.doc_rilascio} onChange={update("doc_rilascio")} confidence={conf.doc_rilascio} />
+            <LabeledInput label="Data scadenza (YYYY-MM-DD)" value={form.doc_scadenza} onChange={update("doc_scadenza")} confidence={conf.doc_scadenza} />
+          </div>
+        </CardContent>
+        <CardFooter className="flex gap-3">
+          <Button onClick={onGeneratePDF} disabled={loadingPDF} variant="secondary">
+            {loadingPDF ? (<><Spinner className="mr-2" size="sm" /> Generazione...</>) : "Genera PDF"}
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
+
