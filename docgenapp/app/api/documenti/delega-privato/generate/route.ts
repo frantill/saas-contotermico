@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DelegaPayload, DelegatoConfig } from "@/lib/types";
 import { renderDelegaHTML } from "@/lib/templates/delega-privato/template";
+import { renderDelegaGSEHTML } from "@/lib/templates/delega-privato/template-gse";
 import { htmlToPdfBuffer } from "@/lib/pdf/htmlToPdf";
 import delegatoJson from "@/config/delegato.json";
 
@@ -14,10 +15,13 @@ export async function POST(req: NextRequest) {
 
     const delegato = delegatoJson as unknown as DelegatoConfig;
 
-    const html = renderDelegaHTML(body, delegato, {
-      templateVersion: "1.0",
-      generatedAt: new Date().toISOString(),
-    });
+    const template = req.nextUrl?.searchParams.get("template") || "gse";
+    const html = template === "legacy"
+      ? renderDelegaHTML(body, delegato, {
+          templateVersion: "1.0",
+          generatedAt: new Date().toISOString(),
+        })
+      : renderDelegaGSEHTML(body, delegato);
 
     const pdf = await htmlToPdfBuffer(html);
 

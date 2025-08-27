@@ -81,6 +81,9 @@ export interface DelegatoConfig {
   cognome?: string; // opzionale se ragione sociale
   piva?: string;
   cf: string; // per Delega usare SEMPRE CF, non P.IVA
+  titolo?: string; // es. Ing., Geom., Perito
+  data_nascita?: string; // DD/MM/YYYY
+  nascita?: { comune: string; provincia: string };
   indirizzo: DelegatoIndirizzo;
   contatti?: DelegatoContatti;
 }
