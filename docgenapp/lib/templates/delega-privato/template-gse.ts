@@ -52,12 +52,14 @@ export function renderDelegaGSEHTML(payload: DelegaPayload, delegato: DelegatoCo
     </style>
   </head>
   <body>
-    <div class="block caps">MODELLO DELEGA DEL SOGGETTO RESPONSABILE<br/>AL SOGGETTO DELEGATO</div>
+    <div style="text-align: center;"><div class="block caps">MODELLO DELEGA</div></div>
 
     <div class="block pre">
 Il/la sottoscritto/a ${delNome} nato a ${delNascita}, il ${delDataNascita}, residente in ${delIndirizzo}, comune di ${delComuneRes}, codice fiscale ${d.codice_fiscale},
 
-DELEGA
+      <div style="text-align: left;"><div class="block">in qualità di <span class="caps">Soggetto Responsabile</span></div></div>
+
+      <div style="text-align: center;"><div class="block caps">DELEGA</div></div>
 
 il/la ${gTitolo} ${gNome} nato a ${gNascita}, il ${gDataNascita}, residente in ${gIndirizzo}, comune di ${gComuneRes}, codice fiscale ${g.cf},
 
