@@ -68,8 +68,8 @@ export const registry: Record<DocumentKey, DocumentDefinition> = {
 ## Template e mapping
 
 Documento: `delega-privato`
-- Template renderer: `docgenapp/lib/templates/delega-privato/template.ts`
-  - Input: `DelegaPayload` + `DelegatoConfig` + `TemplateMeta` → HTML.
+- Template renderer: `docgenapp/lib/templates/delega-privato/template-gse.ts`
+  - Input: `DelegaPayload` + `DelegatoConfig` → HTML (testo GSE “as-is”).
   - Regola POC: __usare sempre il Codice Fiscale (CF) del delegato, non la P.IVA__.
 - Endpoint PDF: `docgenapp/app/api/documenti/delega-privato/generate/route.ts`
   - `POST` con `DelegaPayload`, genera e ritorna PDF (`Content-Disposition: attachment`).
@@ -110,7 +110,7 @@ docgenapp/
     ocr/openrouter.ts
     pdf/htmlToPdf.ts
     templates/
-      delega-privato/template.ts
+      delega-privato/template-gse.ts
   public/
     branding/logo.png                # (opzionale)
 ```
