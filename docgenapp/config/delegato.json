@@ -3,6 +3,12 @@
   "cognome": "Scandola",
   "piva": "IT12345678901",
   "cf": "SCNFNC88L12M172S",
+  "titolo": "Ing.",
+  "data_nascita": "12/07/1988",
+  "nascita": {
+    "comune": "Zevio",
+    "provincia": "VR"
+  },
   "indirizzo": {
     "via": "Via Roversola",
     "civico": "44",

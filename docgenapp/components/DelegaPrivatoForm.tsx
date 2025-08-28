@@ -181,10 +181,7 @@ export default function DelegaPrivatoForm() {
           rilascio: form.doc_rilascio,
           scadenza: form.doc_scadenza,
         },
-        firma: {
-          luogo: form.comune || form.nascita_comune,
-          data: undefined, // default handled server-side (today)
-        },
+        // firma non valorizzata: nessun default per GSE
       };
       const res = await fetch("/api/documenti/delega-privato/generate", {
         method: "POST",
